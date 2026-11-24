@@ -1,0 +1,12 @@
+{
+  "events": [
+    {"type": "advance_time", "time": 10},
+    {"type": "add_patient", "patient": {
+        "id": "P4", "age": 66,
+        "symptoms": ["chest pain", "fainting"],
+        "vitals": {"heart_rate": 140, "systolic": 80, "diastolic": 50, "spo2": 85, "temperature": 37.5, "resp_rate": 28}}},
+    {"type": "set_available", "resource": "ICU1", "available": false, "reason": "equipment failure"},
+    {"type": "update_vitals", "patient": "P2",
+        "vitals": {"heart_rate": 118, "systolic": 92, "diastolic": 60, "spo2": 93, "temperature": 39.4, "resp_rate": 24}}
+  ]
+}

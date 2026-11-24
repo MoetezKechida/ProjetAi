@@ -1,0 +1,35 @@
+{
+  "resources": [
+    {"id": "D1",   "kind": "Doctor", "subtype": "Cardiology"},
+    {"id": "D2",   "kind": "Doctor", "subtype": "General"},
+    {"id": "N1",   "kind": "Nurse",  "subtype": "General"},
+    {"id": "EB1",  "kind": "Bed",    "subtype": "Emergency"},
+    {"id": "EB2",  "kind": "Bed",    "subtype": "Emergency"},
+    {"id": "ICU1", "kind": "Bed",    "subtype": "ICU"},
+    {"id": "ROOM1","kind": "Room",   "subtype": "Examination"},
+    {"id": "ECG1", "kind": "Equipment", "subtype": "ECG"}
+  ],
+  "patients": [
+    {
+      "id": "P1", "age": 72,
+      "symptoms": ["chest pain", "shortness of breath"],
+      "vitals_history": [
+        {"time": 1, "heart_rate": 105, "systolic": 110, "spo2": 95, "temperature": 38.6},
+        {"time": 2, "heart_rate": 112, "systolic": 105, "spo2": 93, "temperature": 38.8},
+        {"time": 3, "heart_rate": 118, "systolic": 98,  "spo2": 91, "temperature": 38.9},
+        {"time": 4, "heart_rate": 125, "systolic": 90,  "spo2": 89, "temperature": 39.0},
+        {"time": 5, "heart_rate": 132, "systolic": 84,  "spo2": 87, "temperature": 39.0, "blood_pressure": "Low"}
+      ]
+    },
+    {
+      "id": "P2", "age": 45,
+      "symptoms": ["moderate fever"],
+      "vitals": {"heart_rate": 88, "systolic": 120, "diastolic": 80, "spo2": 97, "temperature": 38.2, "resp_rate": 16}
+    },
+    {
+      "id": "P3", "age": 30,
+      "symptoms": ["abdominal pain"],
+      "vitals": {"heart_rate": 80, "systolic": 118, "diastolic": 76, "spo2": 98, "temperature": 36.8, "resp_rate": 14}
+    }
+  ]
+}
