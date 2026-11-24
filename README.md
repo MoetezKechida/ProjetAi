@@ -57,11 +57,13 @@ Facts carry a source tag: `env`, `ML`, `DL` (Block 2 should use `derived`).
 
 The files form layers: model.py and kb.py are the foundation, environment.py builds on both, and interface.py and cli.py feed input into it.
 
+```
 JSON / CLI  ->  interface.py  ->  model.py objects  ->  environment.py  ->  kb.py facts
                                                               |
                                                      State snapshot + Events (for Blocks 4-6)
+```
 
-                                                     
+
 **1. kb.py – the Knowledge Base**
 
 This is the agent's symbolic memory. It stores facts like HeartRate(P1,125) and lets you query them.
