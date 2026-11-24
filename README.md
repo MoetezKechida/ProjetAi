@@ -92,6 +92,7 @@ KnowledgeBase methods:
 - subscribe(callback): and _notify call your function on every add or retract, so Block 2 can do incremental inference.
 - dump(): returns a printable listing with sources.
 - version: is a counter that goes up on every real change.
+
 **2. model.py – the entities**
 
 Plain data classes with validation and no reasoning logic.
@@ -152,6 +153,7 @@ It converts JSON or dicts into validated entities, so no LLM is needed.
 - load_events(source): reads a list of events.
 - apply_event(env, event): applies one external change. The supported event types are add_patient, update_vitals, - add_symptom, remove_symptom, add_resource, set_available, discharge, start_treatment and advance_time.
 - dump_scenario(env) and save_scenario export the current environment back to JSON.
+
 **5. cli.py – interactive command line****
 
 Run it with python3 cli.py scenario_example.json.
@@ -162,6 +164,7 @@ HELP is the command list text.
 - _opt parses - as unknown.
 - run(env, line) executes one command. The commands are load, events, show, kb, facts, query, about, patient, vitals, symptom, down, up, assign, release, state, log, save and quit.
 - main() is the REPL loop. It catches errors and prints them instead of crashing.
+
 **6. demo.py**
 
 A script that demonstrates the whole block in seven steps: load the scenario, print P1's facts, run KB queries, create state snapshots, inject ML/DL predictions, simulate a plan being broken by an event stream (new patient, ICU failure, deterioration), and print the final state. You can use it as the basis for your demonstration.
