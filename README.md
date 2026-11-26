@@ -1,3 +1,12 @@
+# Integrated AI Agent for Emergency Management
+
+| Block | Where | Run |
+|---|---|---|
+| 1 – Environment & knowledge representation | repository root (this file) | `python demo.py` |
+| 2 – Reasoning: deduction, unification, resolution | [`reasoning/`](reasoning/README.md) | `python -m reasoning.demo_block2` |
+
+All tests: `python -m unittest discover` (run from the repository root).
+
 # Block 1 – Agent, Environment and Knowledge Representation
 
 Pure Python 3.9+, no dependencies.
