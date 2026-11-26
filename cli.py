@@ -15,6 +15,8 @@ from environment import Environment
 from interface import (apply_event, build_patient, load_events, load_scenario,
                        save_scenario)
 from model import Patient
+from reasoning import Reasoner
+from reasoning import cli_commands as reasoning_cli
 
 HELP = """Commands
   load <file.json>              load a scenario (resources + patients)
@@ -64,15 +66,19 @@ def _opt(x: str):
     return None if x == "-" else float(x)
 
 
-def run(env: Environment, line: str) -> bool:
+def run(env: Environment, line: str, reasoner: Reasoner = None) -> bool:
     parts = shlex.split(line)
     if not parts:
         return True
     cmd, args = parts[0].lower(), parts[1:]
     if cmd in ("quit", "exit"):
         return False
+    elif reasoner is not None and reasoning_cli.handle(reasoner, cmd, args):
+        pass
     elif cmd == "help":
         print(HELP)
+        if reasoner is not None:
+            print(reasoning_cli.HELP)
     elif cmd == "load":
         load_scenario(env, args[0]); print(env.describe())
     elif cmd == "events":
@@ -124,6 +130,7 @@ def run(env: Environment, line: str) -> bool:
 
 def main() -> None:
     env = Environment()
+    reasoner = Reasoner(env)   # follows every environment change (Block 2)
     if len(sys.argv) > 1:
         load_scenario(env, sys.argv[1])
         print(env.describe())
@@ -134,7 +141,7 @@ def main() -> None:
         except (EOFError, KeyboardInterrupt):
             break
         try:
-            if not run(env, line):
+            if not run(env, line, reasoner):
                 break
         except (ValueError, KeyError, IndexError, json.JSONDecodeError, FileNotFoundError) as e:
             print(f"  error: {e}")
