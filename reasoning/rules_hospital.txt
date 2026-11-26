@@ -1,0 +1,49 @@
+# rules_hospital.txt - Rule base of the emergency agent (Block 2).
+#
+#   ID: Lit & Lit & ... => Head          'not Lit' = negation as failure
+#   Variables start with '?'. Less/LessEq/Greater/GreaterEq/Eq/Neq are builtins.
+#
+# SIMULATION ONLY: thresholds are educational, not medical advice.
+# Predicates come from Block 1 (environment.py); see README "Predicates produced".
+
+# ---- Layer 1: clinical signs computed from numeric vitals ----------------
+S1: OxygenSaturation(?x,?s) & Less(?s,90)      => Hypoxemia(?x)
+S2: OxygenSaturation(?x,?s) & LessEq(?s,85)    => SevereHypoxemia(?x)
+S3: HeartRate(?x,?h) & Greater(?h,100)         => Tachycardia(?x)
+S4: Temperature(?x,?t) & GreaterEq(?t,38)      => Fever(?x)
+S5: RespiratoryRate(?x,?r) & GreaterEq(?r,22)  => Tachypnea(?x)
+S6: Age(?x,?a) & GreaterEq(?a,65)              => Elderly(?x)
+S7: PatientWaiting(?x)                         => Active(?x)
+S8: PatientUnderTreatment(?x)                  => Active(?x)
+
+# ---- Layer 2: risk, from explicit knowledge + ML/DL evidence (Block 3) ---
+R1: HasSymptom(?x,ChestPain) & LowBloodPressure(?x)          => HighRisk(?x)      # PDF rule
+R2: Hypoxemia(?x) & HasSymptom(?x,ShortnessOfBreath)         => HighRisk(?x)
+R3: Fever(?x) & Tachycardia(?x) & Tachypnea(?x)              => HighRisk(?x)      # sepsis-like pattern
+R4: LowBloodPressure(?x) & Tachycardia(?x) & SevereHypoxemia(?x) => CriticalRisk(?x)  # shock pattern
+R5: ML_Risk(?x,High,?p) & GreaterEq(?p,0.7)                  => HighRisk(?x)      # ML evidence
+R6: ML_Risk(?x,Critical,?p) & GreaterEq(?p,0.8)              => CriticalRisk(?x)  # ML evidence
+R7: DL_Risk(?x,Critical,?p) & GreaterEq(?p,0.8)              => CriticalRisk(?x)  # DL evidence (PDF)
+R8: DL_Risk(?x,High,?p) & GreaterEq(?p,0.7)                  => HighRisk(?x)      # DL evidence
+R9: CriticalRisk(?x)                                         => HighRisk(?x)
+
+# ---- Layer 3: requirements -------------------------------------------------
+Q1: Active(?x) & HighRisk(?x)                                => RequiresUrgentEvaluation(?x)  # PDF rule
+Q2: Active(?x) & CriticalRisk(?x)                            => RequiresICU(?x)               # PDF rule
+Q3: Active(?x) & HighRisk(?x) & HasSymptom(?x,ChestPain)     => RequiresSpecialist(?x,Cardiology)
+Q4: Active(?x) & HighRisk(?x) & not HasSymptom(?x,ChestPain) => RequiresSpecialist(?x,General)
+Q5: Active(?x) & HighRisk(?x) & HasSymptom(?x,ChestPain)     => RequiresEquipment(?x,ECG)
+Q6: Active(?x) & HighRisk(?x) & not CriticalRisk(?x)         => RequiresEmergencyBed(?x)
+Q7: Active(?x) & not HighRisk(?x)                            => RequiresExamRoom(?x)
+Q8: RequiresSpecialist(?x,?s) & Doctor(?d) & Specialty(?d,?s) & Available(?d) => CandidateDoctor(?x,?d)  # 2-variable unification
+
+# ---- Layer 4: bridge to Search (Block 4) -----------------------------------
+# RequiresResource(Patient, Kind, Subtype) matches env.free_resources(kind, subtype)
+B1: RequiresICU(?x)             => RequiresResource(?x,Bed,ICU)
+B2: RequiresEmergencyBed(?x)    => RequiresResource(?x,Bed,Emergency)
+B3: RequiresSpecialist(?x,?s)   => RequiresResource(?x,Doctor,?s)
+B4: RequiresEquipment(?x,?e)    => RequiresResource(?x,Equipment,?e)
+B5: RequiresExamRoom(?x)        => RequiresResource(?x,Room,Examination)
+PR1: Active(?x) & CriticalRisk(?x)                           => Priority(?x,1)
+PR2: Active(?x) & HighRisk(?x) & not CriticalRisk(?x)        => Priority(?x,2)
+PR3: Active(?x) & not HighRisk(?x)                           => Priority(?x,3)
