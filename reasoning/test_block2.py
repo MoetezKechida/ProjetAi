@@ -5,7 +5,8 @@ import unittest
 from environment import Environment
 from interface import apply_event, load_events, load_scenario
 from kb import F
-from reasoning import RULES_FILE
+from model import VitalSigns
+from reasoning import RULES_FILE, Reasoner
 from reasoning.forward import explain, forward_chain
 from reasoning.rules import eval_builtin, load_rules, parse_rule, parse_rules, stratify
 from reasoning.unify import (Compound, compose, fresh_mapping, rename, substitute, unify,
@@ -214,6 +215,135 @@ class TestForwardChaining(unittest.TestCase):
         self.assertTrue(self.kb.holds("HighRisk(P2)"))              # R3 after deterioration
         self.assertTrue(self.kb.holds("RequiresResource(P2,Bed,Emergency)"))
         self.assertFalse(self.kb.holds("CriticalRisk(P1)"))
+
+
+class TestReasoner(unittest.TestCase):
+    def setUp(self):
+        self.env = make_env()
+        self.r = Reasoner(self.env)
+
+    def test_infers_on_creation(self):
+        self.assertTrue(self.r.holds("HighRisk(P1)"))
+        self.assertTrue(all(self.env.kb.source_of(f) == "derived" for f in self.r.derived()))
+
+    def test_requirements_contract(self):
+        self.assertEqual(self.r.requirements(), {
+            "P1": {"priority": 2, "urgent_evaluation": True,
+                   "needs": [("Bed", "Emergency"), ("Doctor", "Cardiology"), ("Equipment", "ECG")]},
+            "P2": {"priority": 3, "urgent_evaluation": False, "needs": [("Room", "Examination")]},
+            "P3": {"priority": 3, "urgent_evaluation": False, "needs": [("Room", "Examination")]},
+        })
+        # every (kind, subtype) is something env.free_resources understands
+        for req in self.r.requirements().values():
+            for kind, subtype in req["needs"]:
+                self.assertTrue(self.env.free_resources(kind, subtype), (kind, subtype))
+
+    def test_dl_evidence_updates_automatically(self):
+        self.env.record_risk("P1", "DL", "Critical", 0.91)      # no manual run()
+        req = self.r.requirements()["P1"]
+        self.assertEqual(req["priority"], 1)
+        self.assertIn(("Bed", "ICU"), req["needs"])
+        self.assertNotIn(("Bed", "Emergency"), req["needs"])    # retracted, not stale
+        self.assertIn("[R7]", self.r.why("CriticalRisk(P1)"))
+        self.assertIn("[DL]", self.r.why("CriticalRisk(P1)"))
+
+    def test_truth_maintenance_on_new_vitals(self):
+        self.env.record_risk("P1", "DL", "Critical", 0.91)
+        self.assertTrue(self.r.holds("RequiresICU(P1)"))
+        # P1 improves: new vitals delete the DL fact (Block 1) and no rule fires any more
+        self.env.update_vitals("P1", VitalSigns(heart_rate=85, systolic=125, spo2=97, temperature=37.0))
+        for f in ("RequiresICU(P1)", "CriticalRisk(P1)", "HighRisk(P1)", "Hypoxemia(P1)"):
+            self.assertFalse(self.r.holds(f), f)
+        self.assertEqual(self.r.requirements()["P1"]["priority"], 3)
+        last = self.r.history[-1]
+        self.assertIn("vitals_updated", last.cause)
+
+    def test_resource_availability_changes_candidates(self):
+        self.assertTrue(self.r.holds("CandidateDoctor(P1,D1)"))
+        self.env.assign("P2", "D1")
+        self.assertFalse(self.r.holds("CandidateDoctor(P1,D1)"))
+        self.env.release("P2", "D1")
+        self.assertTrue(self.r.holds("CandidateDoctor(P1,D1)"))
+
+    def test_discharged_patient_has_no_requirements(self):
+        self.env.discharge("P3")
+        self.assertNotIn("P3", self.r.requirements())
+        self.assertFalse(self.r.derived("P3"))
+
+    def test_dynamic_scenario(self):
+        self.env.record_risk("P1", "DL", "Critical", 0.91)
+        for ev in load_events(os.path.join(ROOT, "scenario_dynamic_events.json")):
+            apply_event(self.env, ev)
+        req = self.r.requirements()
+        self.assertEqual(list(req)[:2], ["P1", "P4"])           # both critical, sorted first
+        self.assertIn(("Bed", "ICU"), req["P4"]["needs"])        # P1 and P4 compete for ICU1
+        self.assertEqual(req["P2"]["priority"], 2)               # deteriorated
+        self.assertIn(("Bed", "Emergency"), req["P2"]["needs"])
+        self.assertEqual(req["P3"]["priority"], 3)
+
+    def test_manual_mode(self):
+        env = make_env()
+        r = Reasoner(env, auto=False)
+        env.record_risk("P1", "DL", "Critical", 0.91)
+        self.assertFalse(r.holds("RequiresICU(P1)"))    # not followed automatically
+        result = r.run("after DL")
+        self.assertTrue(r.holds("RequiresICU(P1)"))
+        self.assertIn(F("RequiresICU", "P1"), result.added)
+        self.assertIn(F("RequiresEmergencyBed", "P1"), result.removed)
+
+
+class TestResolution(unittest.TestCase):
+    def setUp(self):
+        self.env = make_env()
+        self.r = Reasoner(self.env)
+        self.env.record_risk("P1", "DL", "Critical", 0.91)
+
+    def test_pdf_query_proved(self):
+        res = self.r.ask("RequiresICU(P1)")
+        self.assertTrue(res)
+        self.assertFalse(res.proof[-1].resolvent)                     # ends with the empty clause
+        partners = " ".join(s.partner for s in res.proof)
+        self.assertIn("[Q2]", partners)
+        self.assertIn("DL_Risk(P1,Critical,0.91) [DL]", partners)     # uses the learned evidence
+        self.assertIn("PROVED", res.format())
+
+    def test_failed_query(self):
+        res = self.r.ask("RequiresICU(P3)")
+        self.assertFalse(res)
+        self.assertFalse(res.limit_reached)                          # search space exhausted
+        self.assertIn("dead end", res.format())
+        self.assertIn("NOT PROVED", res.format())
+
+    def test_answer_extraction(self):
+        self.assertEqual(self.r.ask("RequiresICU(?x)").answers, [{"?x": "P1"}])
+        self.assertEqual(self.r.ask("CandidateDoctor(P1,?d)").answers, [{"?d": "D1"}])
+        self.assertEqual(self.r.ask("Bogus(?x)").answers, [])
+
+    def test_does_not_use_derived_facts(self):
+        # HighRisk(P1) is in the KB as a derived fact, but the proof rebuilds it from base facts
+        res = self.r.ask("HighRisk(P1)")
+        self.assertTrue(res)
+        self.assertGreater(len(res.proof), 1)
+        self.assertTrue(all("[derived]" not in s.partner for s in res.proof))
+
+    def test_low_probability_blocks_proof(self):
+        self.env.record_risk("P1", "DL", "Critical", 0.5)   # replaces 0.91
+        res = self.r.ask("RequiresICU(P1)")
+        self.assertFalse(res)
+        self.assertIn("GreaterEq(0.5,0.8) is false", res.format())
+
+    def test_agrees_with_forward_chaining(self):
+        """Soundness + completeness check on the Horn part: for every predicate whose
+        rules use no 'not', resolution proves exactly the facts forward chaining derived."""
+        for ev in load_events(os.path.join(ROOT, "scenario_dynamic_events.json")):
+            apply_event(self.env, ev)
+        horn_preds = ["Hypoxemia", "Tachycardia", "Fever", "Elderly", "Active", "HighRisk",
+                      "CriticalRisk", "RequiresUrgentEvaluation", "RequiresICU", "RequiresEquipment"]
+        for pred in horn_preds:
+            derived = {f.args[0] for f in self.env.kb.facts(pred)}
+            pattern = "?x" if pred != "RequiresEquipment" else "?x,ECG"
+            answers = {a["?x"] for a in self.r.ask(f"{pred}({pattern})").answers}
+            self.assertEqual(answers, derived, pred)
 
 
 if __name__ == "__main__":
