@@ -110,3 +110,74 @@ def save_json(obj, path: str) -> None:
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         json.dump(obj, f, indent=2)
+
+
+# ---- model comparison (python -m learning.evaluate) -------------------------
+REPORT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "reports")
+
+
+def comparison_rows(ml: dict, dl: dict) -> list:
+    """One row per model: (name, kind, validation scores, test scores on all patients)."""
+    rows = [("Persistence (current NEWS2 level)", "rule", None, ml["persistence_test"]["all"])]
+    for name, r in ml["candidates"].items():
+        rows.append((name, "ML", r["validation"], r["test"]["all"]))
+    rows.append(("GRU", "DL", dl["validation"], dl["test"]["all"]))
+    return rows
+
+
+def comparison_markdown(ml: dict, dl: dict) -> str:
+    def f(x):
+        return "–" if x is None else f"{x:.3f}"
+    head = ("| Model | Type | Val macro-F1 | Accuracy | Macro precision | Macro recall | Macro-F1 | "
+            "Critical P / R / F1 | AUROC Critical | AUROC ≥ High |\n|" + "---|" * 10)
+    lines = [head]
+    for name, kind, val, t in comparison_rows(ml, dl):
+        pc = t["per_class"]
+        prec = np.mean([pc[c]["precision"] for c in LEVELS])
+        rec = np.mean([pc[c]["recall"] for c in LEVELS])
+        mark = "**" if name in (ml["best"], "GRU") else ""
+        crit = pc["Critical"]
+        lines.append(f"| {mark}{name}{mark} | {kind} | {f(val and val['macro_f1'])} | {t['accuracy']:.3f} | "
+                     f"{prec:.3f} | {rec:.3f} | {t['macro_f1']:.3f} | "
+                     f"{crit['precision']:.2f} / {crit['recall']:.2f} / {crit['f1']:.2f} | "
+                     f"{f(t.get('auroc_critical'))} | {f(t.get('auroc_high_or_more'))} |")
+    return "\n".join(lines)
+
+
+def plot_all_confusions(ml: dict, dl: dict, path: str) -> None:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    rows = comparison_rows(ml, dl)
+    fig, axes = plt.subplots(2, 4, figsize=(17, 9.6))
+    for ax, (name, kind, _, t) in zip(axes.flat, rows):
+        cm = np.asarray(t["confusion"], dtype=float)
+        norm = cm / cm.sum(axis=1, keepdims=True).clip(min=1)
+        ax.imshow(norm, cmap="Blues", vmin=0, vmax=1)
+        for i in range(4):
+            for j in range(4):
+                ax.text(j, i, f"{norm[i, j]:.0%}", ha="center", va="center", fontsize=8,
+                        color="white" if norm[i, j] > 0.55 else "black")
+        ax.set_xticks(range(4), LEVELS, fontsize=7); ax.set_yticks(range(4), LEVELS, fontsize=7)
+        ax.set_title(f"{name} ({kind})\nmacro-F1 {t['macro_f1']:.3f}", fontsize=9)
+    for ax in axes.flat[len(rows):]:
+        ax.axis("off")
+    fig.supxlabel("predicted"); fig.supylabel("true")
+    fig.suptitle("Confusion matrices on the test set (rows normalised)")
+    fig.tight_layout(); fig.savefig(path, dpi=110); plt.close(fig)
+
+
+def main():
+    with open(os.path.join(REPORT_DIR, "ml_results.json")) as f:
+        ml = json.load(f)
+    with open(os.path.join(REPORT_DIR, "dl_results.json")) as f:
+        dl = json.load(f)
+    table = comparison_markdown(ml, dl)
+    with open(os.path.join(REPORT_DIR, "model_comparison.md"), "w") as f:
+        f.write("# Model comparison (test set, all patients)\n\n" + table + "\n")
+    plot_all_confusions(ml, dl, os.path.join(REPORT_DIR, "cm_all_models.png"))
+    print(table)
+
+
+if __name__ == "__main__":
+    main()

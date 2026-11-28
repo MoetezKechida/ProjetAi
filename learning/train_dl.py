@@ -25,7 +25,7 @@ from torch import nn
 
 from .data_loader import VITALS
 from .dataset import SAMPLES
-from .evaluate import plot_confusion, save_json, scores, short, test_report
+from .evaluate import plot_confusion, save_json, scores, scores_proba, short, test_report
 
 MODEL_DIR = os.path.join(os.path.dirname(__file__), "models")
 REPORT_DIR = os.path.join(os.path.dirname(__file__), "reports")
@@ -122,13 +122,14 @@ def fit_gru(tr, va, epochs: int = 25, patience: int = 4, seed: int = 42, verbose
 def main():
     tr, va, te, _ = pickle.load(open(SAMPLES, "rb"))
     model, norm, history = fit_gru(tr, va)
+    val = scores_proba(va.y, predict_proba(model, norm(va.X_seq, va.X_tab[:, 0])), va.cur)
     test = test_report(te, predict_proba(model, norm(te.X_seq, te.X_tab[:, 0])))
     for part, sc in test.items():
         print(short(f"GRU ({part})", sc))
     os.makedirs(MODEL_DIR, exist_ok=True)
     torch.save({"state_dict": model.state_dict(), "normalizer": norm.state(),
                 "config": {"hidden": 64}}, os.path.join(MODEL_DIR, "dl_gru.pt"))
-    save_json({"test": test, "history": history}, os.path.join(REPORT_DIR, "dl_results.json"))
+    save_json({"validation": val, "test": test, "history": history}, os.path.join(REPORT_DIR, "dl_results.json"))
     plot_confusion(test["all"]["confusion"], "DL (GRU) - test", os.path.join(REPORT_DIR, "cm_dl.png"))
 
 

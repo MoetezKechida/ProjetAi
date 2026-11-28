@@ -64,21 +64,19 @@ def main() -> None:
     # ------------------------------------------------------------------
     title("2. EVALUATION on the test patients (never seen during training)")
     ml, dl = load("ml_results.json"), load("dl_results.json")
-    print("ML candidates (validation macro-F1):",
-          ", ".join(f"{k}={v['macro_f1']:.3f}" for k, v in ml["validation"].items()),
-          f"-> kept: {ml['best']}")
-    rows = [("Persistence (copy current NEWS2 level)", ml["persistence_test"]),
-            (f"ML  {ml['best']} (current vitals)", ml["test"]),
-            ("DL  GRU (last 6 hours)", dl["test"])]
-    print(f"\n{'':40} {'acc':>6} {'macroF1':>8} {'recall':>7} {'AUROC':>7} {'changing':>9}")
-    print(f"{'':40} {'':>6} {'':>8} {'Critic.':>7} {'Critic.':>7} {'macroF1':>9}")
-    for name, r in rows:
-        s = r["all"]
-        auc = f"{s['auroc_critical']:7.3f}" if "auroc_critical" in s else f"{'-':>7}"
-        print(f"{name:40} {s['accuracy']:6.3f} {s['macro_f1']:8.3f} "
-              f"{s['per_class']['Critical']['recall']:7.3f} {auc} {s['changing_cases']['macro_f1']:9.3f}")
-    print("\n'changing' = hours where the future level differs from the current one;")
-    print("copying the present is always wrong there, so it measures what was LEARNED.")
+    rows = [("Persistence (current NEWS2 level)", None, ml["persistence_test"]["all"])]
+    rows += [(f"ML  {n}", r["validation"]["macro_f1"], r["test"]["all"]) for n, r in ml["candidates"].items()]
+    rows += [("DL  GRU (last 6 hours)", dl["validation"]["macro_f1"], dl["test"]["all"])]
+    print(f"{'':36} {'val':>7} | {'test':>6} {'test':>8} {'Critical':>14} {'AUROC':>7}")
+    print(f"{'':36} {'macroF1':>7} | {'acc':>6} {'macroF1':>8} {'P / R':>14} {'Critic.':>7}")
+    for name, v, t in rows:
+        c = t["per_class"]["Critical"]
+        auc = f"{t['auroc_critical']:7.3f}" if "auroc_critical" in t else f"{'-':>7}"
+        print(f"{name:36} {'-' if v is None else f'{v:.3f}':>7} | {t['accuracy']:6.3f} {t['macro_f1']:8.3f} "
+              f"{c['precision']:6.2f} / {c['recall']:.2f} {auc}")
+    print(f"\nChoice on the VALIDATION set -> ML kept: {ml['best']}; the test set is only reported.")
+    print("Accuracy is misleading: the persistence rule, SVM and k-NN score well on it")
+    print("because Low/Medium dominate, but they almost never detect a Critical patient.")
     print("\nPer hospital (macro-F1 / AUROC Critical):")
     for h in ("hospital_A", "hospital_B"):
         print(f"  {h}:  ML {ml['test'][h]['macro_f1']:.3f} / {ml['test'][h]['auroc_critical']:.3f}"

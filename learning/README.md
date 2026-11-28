@@ -11,8 +11,9 @@ https://physionet.org/content/challenge-2019/1.0.0/ and zip them as `data/raw/tr
 `data/raw/training_setB.zip`, then:
 ```
 python -m learning.dataset     # ~3 min: load both hospitals, label, split, build samples -> data/cache/
-python -m learning.train_ml    # ~30 s  -> learning/models/ml_model.joblib
+python -m learning.train_ml    # ~3 min: 5 ML candidates -> learning/models/ml_model.joblib
 python -m learning.train_dl    # ~3 min on CPU -> learning/models/dl_gru.pt
+python -m learning.evaluate    # comparison table + confusion matrices of all models -> learning/reports/
 ```
 
 ## Role in the agent
@@ -39,13 +40,13 @@ alone only conclude `HighRisk(P1)`: the learned evidence changes the decision, a
 | `data_loader.py` | Reads the PhysioNet `.psv` files (from the zips) of both hospitals. Keeps age + the 6 vitals of Block 1, drops lab values (the agent does not observe them). Rebuilds a missing DBP from MAP. |
 | `labeling.py` | NEWS2 score and the 4 risk classes. |
 | `dataset.py` | Stratified split by patient, imputation, 6-hour windows, samples. |
-| `evaluate.py` | Metrics, AUROC, persistence baseline, "changing cases", per-hospital scores, confusion matrices. |
-| `train_ml.py` | Trains Logistic Regression, Decision Tree, Random Forest, k-NN; keeps the best on validation. |
+| `evaluate.py` | Metrics, AUROC, persistence baseline, "changing cases", per-hospital scores, confusion matrices, model comparison. |
+| `train_ml.py` | Trains Logistic Regression, Decision Tree, Random Forest, SVM, k-NN; keeps the best on validation. |
 | `train_dl.py` | GRU model, normaliser, training loop with early stopping. |
 | `predictor.py` | `RiskPredictor`: Block 1 `Patient` → model inputs → `env.record_risk(...)`. |
 | `demo_block3.py` | End-to-end demonstration. |
 | `models/` | `ml_model.joblib` (9 MB), `dl_gru.pt` (170 KB). |
-| `reports/` | Metrics (JSON) and confusion matrices (PNG) for the report. |
+| `reports/` | Metrics (JSON), `model_comparison.md` (table of all models), `cm_all_models.png` (all confusion matrices), confusion matrices of the kept models. |
 
 ## Dataset
 PhysioNet/Computing in Cardiology Challenge 2019 (Reyna et al., *Crit Care Med* 2020), open access, one row per
@@ -95,38 +96,65 @@ not enough. The remaining risk ("the future looks like the present") is measured
   applies probability thresholds.
 
 ## Models
-- **ML**: 4 candidates, chosen on the validation macro-F1: Random Forest 0.426, Decision Tree 0.403,
-  k-NN 0.369, Logistic Regression 0.365. Logistic Regression = linear reference; Decision Tree = readable but
-  unstable; **Random Forest** (kept) = non-linear thresholds (vitals are dangerous at both extremes), robust to
-  noise, gives feature importances; k-NN = slow at prediction, weak on rare classes.
-- **DL**: 2-layer **GRU** (hidden 64, 42k parameters) on (6 hours × 13 features). GRU rather than LSTM: same
-  principle with 2 gates instead of 3, fewer parameters, as good on short sequences. Early stopping on the
-  validation macro-F1 (stopped at epoch 14).
+**ML – 5 candidates**, all with class weights, trained on the same windows (current vitals + age):
+
+| Model | Why it is a candidate | Limit for this problem |
+|---|---|---|
+| Logistic Regression | linear reference, fast, interpretable coefficients | a vital is dangerous at **both** extremes (low and high heart rate): not linear |
+| Decision Tree | readable thresholds, close to clinical rules | unstable, overfits |
+| **Random Forest** (kept) | many trees on random subsets: non-linear thresholds, robust to noise, feature importances | larger model (9 MB) |
+| SVM (RBF kernel) | non-linear frontier with a maximal margin | training time grows ~quadratically: trained on 20,000 windows |
+| k-NN (k = 31) | "similar patients have similar risk" | stores the data, slow to predict, sensitive to scaling: trained on 40,000 windows |
+
+**DL**: 2-layer **GRU** (hidden 64, 42k parameters) on (6 hours × 13 features). GRU rather than LSTM: same
+principle with 2 gates instead of 3, fewer parameters, as good on short sequences. Early stopping on the
+validation macro-F1 (stopped at epoch 14).
+
+The model kept for each component is the best **on the validation set**; the test set is only used to report
+the scores below.
 
 ## Results (test: 58,042 windows of 5,967 patients never seen during training)
-| | Accuracy | Macro-F1 | Precision / Recall Critical | Macro-F1 on changing cases | AUROC Critical | AUROC ≥ High |
-|---|---|---|---|---|---|---|
-| Persistence (copy current level) | 0.611 | 0.356 | 0 / 0 | 0.000 | – | – |
-| ML – Random Forest | 0.560 | 0.424 | 0.21 / 0.24 | 0.282 | 0.762 | 0.831 |
-| **DL – GRU** | **0.646** | **0.490** | **0.44** / 0.18 | **0.304** | **0.785** | **0.850** |
+| Model | Type | Val macro-F1 | Accuracy | Macro precision | Macro recall | Macro-F1 | Critical P / R / F1 | AUROC Critical | AUROC ≥ High |
+|---|---|---|---|---|---|---|---|---|---|
+| Persistence (copy current level) | rule | – | 0.611 | 0.417 | 0.362 | 0.356 | 0.00 / 0.00 / 0.00 | – | – |
+| Logistic Regression | ML | 0.365 | 0.495 | 0.370 | 0.416 | 0.368 | 0.07 / 0.23 / 0.11 | 0.729 | 0.806 |
+| Decision Tree | ML | 0.403 | 0.541 | 0.401 | 0.454 | 0.402 | 0.13 / 0.26 / 0.18 | 0.712 | 0.813 |
+| **Random Forest** | ML | **0.426** | 0.559 | 0.426 | 0.474 | 0.424 | 0.21 / 0.24 / 0.22 | 0.762 | 0.831 |
+| SVM (RBF) | ML | 0.360 | 0.625 | 0.528 | 0.365 | 0.364 | 0.42 / 0.02 / 0.03 | 0.744 | 0.819 |
+| k-NN | ML | 0.368 | 0.617 | 0.541 | 0.360 | 0.362 | 0.54 / 0.03 / 0.06 | 0.695 | 0.803 |
+| **GRU** | DL | **0.494** | **0.646** | 0.533 | **0.475** | **0.490** | 0.44 / 0.18 / 0.25 | **0.785** | **0.850** |
+
+Confusion matrices of all models: `reports/cm_all_models.png`.
 
 Per hospital (macro-F1 / AUROC Critical):
 
-| | ML | DL |
+| | Random Forest | GRU |
 |---|---|---|
 | hospital A | 0.416 / 0.736 | 0.483 / 0.756 |
 | hospital B | 0.432 / 0.787 | 0.495 / 0.815 |
 
-- Both models beat the persistence rule: they learned more than "the future looks like the present".
-- The DL beats the ML on every global measure: the history of the vitals carries information. The ML recalls a
-  few more Critical windows at the most probable class, but with half the precision of the DL.
+**ML comparison**
+- **Random Forest** has the best validation macro-F1 and the best AUROC of the ML models: kept.
+- **Logistic Regression** is the weakest on macro-F1: the risk is not a linear function of the vitals.
+- **Decision Tree** is close to the Random Forest on recall but less precise and ranks patients less well
+  (AUROC 0.71): one tree is less stable than a forest.
+- **SVM and k-NN** have a high accuracy but almost never predict Critical (recall 0.02–0.03). The SVM ranks
+  patients reasonably well (AUROC 0.74), but its probabilities are recalibrated on the training data, which
+  cancels the class weights; k-NN votes among neighbours, where Critical is always a minority. Both are also
+  trained on a subsample only.
+
+**ML vs DL**
+- Both beat the persistence rule: they learned more than "the future looks like the present".
+- The GRU beats every ML model on macro-F1, AUROC and accuracy: the history of the vitals carries information.
+  The Random Forest recalls a few more Critical windows at the most probable class, but with half the precision.
 - The scores are close in both hospitals: the models do not depend on one hospital's habits (only the 6 basic
   vitals are used, not lab tests whose units and frequencies differ between hospitals).
 - Random Forest importances: respiratory rate 0.25, heart rate 0.24, systolic BP 0.19, SpO2 0.12.
 - Example (demo §4): same vitals at the last hour, different histories → identical ML outputs, different DL
   outputs. The GRU learned that a patient who was very unstable in the last hours stays at high risk.
-- Accuracy is not the right metric here: the persistence rule has a good accuracy because Low/Medium dominate,
-  but never detects a Critical patient. Macro-F1, recall per class and AUROC are reported instead.
+- **Accuracy is misleading** here: the persistence rule, the SVM and k-NN have a good accuracy because
+  Low/Medium dominate, but (almost) never detect a Critical patient. Macro-F1, recall per class and AUROC are
+  the measures used to compare.
 
 ## Limitations
 - **Population**: ICU patients, not emergency department; no symptoms (handled by the Block 2 rules).
@@ -137,5 +165,5 @@ Per hospital (macro-F1 / AUROC Critical):
 - **Uncertainty**: probabilities are spread over 4 classes and not formally calibrated, while Block 2 uses fixed
   thresholds (0.7 / 0.8): for P1 the ML says Critical at 0.69, which R6 ignores; the threshold matters.
 - **Overfitting**: limited by the split by patient, early stopping, minimum leaf size and dropout; validation
-  and test scores are close (Random Forest 0.426 / 0.424, GRU 0.492 / 0.490).
+  and test scores are close (Random Forest 0.426 / 0.424, GRU 0.494 / 0.490).
 - Simulation only – not a medical tool.

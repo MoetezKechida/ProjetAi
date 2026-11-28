@@ -1,259 +1,1322 @@
 {
-  "validation": {
+  "best": "RandomForest",
+  "candidates": {
     "LogisticRegression": {
-      "accuracy": 0.4941,
-      "macro_f1": 0.3647,
-      "per_class": {
-        "Low": {
-          "precision": 0.689,
-          "recall": 0.657,
-          "f1": 0.673,
-          "support": 29784
+      "train_windows": 272288,
+      "fit_seconds": 0.4,
+      "predict_seconds_val": 0.0,
+      "validation": {
+        "accuracy": 0.4941,
+        "macro_f1": 0.3647,
+        "per_class": {
+          "Low": {
+            "precision": 0.689,
+            "recall": 0.657,
+            "f1": 0.673,
+            "support": 29784
+          },
+          "Medium": {
+            "precision": 0.48,
+            "recall": 0.313,
+            "f1": 0.379,
+            "support": 22432
+          },
+          "High": {
+            "precision": 0.229,
+            "recall": 0.455,
+            "f1": 0.305,
+            "support": 4101
+          },
+          "Critical": {
+            "precision": 0.067,
+            "recall": 0.216,
+            "f1": 0.102,
+            "support": 2306
+          }
         },
-        "Medium": {
-          "precision": 0.48,
-          "recall": 0.313,
-          "f1": 0.379,
-          "support": 22432
+        "confusion": [
+          [
+            19574,
+            6557,
+            1504,
+            2149
+          ],
+          [
+            7866,
+            7027,
+            3832,
+            3707
+          ],
+          [
+            477,
+            657,
+            1865,
+            1102
+          ],
+          [
+            478,
+            403,
+            928,
+            497
+          ]
+        ],
+        "changing_cases": {
+          "n": 22679,
+          "accuracy": 0.3051,
+          "macro_f1": 0.2532
         },
-        "High": {
-          "precision": 0.229,
-          "recall": 0.455,
-          "f1": 0.305,
-          "support": 4101
+        "deterioration_detected": 0.5229,
+        "auroc_critical": 0.7358,
+        "auroc_high_or_more": 0.8034
+      },
+      "test": {
+        "all": {
+          "accuracy": 0.495,
+          "macro_f1": 0.3679,
+          "per_class": {
+            "Low": {
+              "precision": 0.692,
+              "recall": 0.664,
+              "f1": 0.678,
+              "support": 29171
+            },
+            "Medium": {
+              "precision": 0.484,
+              "recall": 0.308,
+              "f1": 0.376,
+              "support": 22293
+            },
+            "High": {
+              "precision": 0.232,
+              "recall": 0.459,
+              "f1": 0.308,
+              "support": 4283
+            },
+            "Critical": {
+              "precision": 0.072,
+              "recall": 0.231,
+              "f1": 0.109,
+              "support": 2295
+            }
+          },
+          "confusion": [
+            [
+              19377,
+              6255,
+              1521,
+              2018
+            ],
+            [
+              7671,
+              6858,
+              4092,
+              3672
+            ],
+            [
+              468,
+              677,
+              1968,
+              1170
+            ],
+            [
+              493,
+              378,
+              895,
+              529
+            ]
+          ],
+          "changing_cases": {
+            "n": 22592,
+            "accuracy": 0.3061,
+            "macro_f1": 0.2573
+          },
+          "deterioration_detected": 0.5327,
+          "auroc_critical": 0.7292,
+          "auroc_high_or_more": 0.806
         },
-        "Critical": {
-          "precision": 0.067,
-          "recall": 0.216,
-          "f1": 0.102,
-          "support": 2306
+        "hospital_A": {
+          "accuracy": 0.4711,
+          "macro_f1": 0.3653,
+          "per_class": {
+            "Low": {
+              "precision": 0.661,
+              "recall": 0.637,
+              "f1": 0.649,
+              "support": 13756
+            },
+            "Medium": {
+              "precision": 0.509,
+              "recall": 0.318,
+              "f1": 0.391,
+              "support": 12370
+            },
+            "High": {
+              "precision": 0.233,
+              "recall": 0.431,
+              "f1": 0.303,
+              "support": 2326
+            },
+            "Critical": {
+              "precision": 0.077,
+              "recall": 0.256,
+              "f1": 0.119,
+              "support": 1368
+            }
+          },
+          "confusion": [
+            [
+              8766,
+              3155,
+              689,
+              1146
+            ],
+            [
+              3971,
+              3930,
+              2128,
+              2341
+            ],
+            [
+              245,
+              382,
+              1003,
+              696
+            ],
+            [
+              276,
+              260,
+              482,
+              350
+            ]
+          ],
+          "changing_cases": {
+            "n": 12451,
+            "accuracy": 0.3148,
+            "macro_f1": 0.2629
+          },
+          "deterioration_detected": 0.5445,
+          "auroc_critical": 0.7115,
+          "auroc_high_or_more": 0.7936
+        },
+        "hospital_B": {
+          "accuracy": 0.5203,
+          "macro_f1": 0.3677,
+          "per_class": {
+            "Low": {
+              "precision": 0.719,
+              "recall": 0.688,
+              "f1": 0.704,
+              "support": 15415
+            },
+            "Medium": {
+              "precision": 0.455,
+              "recall": 0.295,
+              "f1": 0.358,
+              "support": 9923
+            },
+            "High": {
+              "precision": 0.231,
+              "recall": 0.493,
+              "f1": 0.315,
+              "support": 1957
+            },
+            "Critical": {
+              "precision": 0.063,
+              "recall": 0.193,
+              "f1": 0.095,
+              "support": 927
+            }
+          },
+          "confusion": [
+            [
+              10611,
+              3100,
+              832,
+              872
+            ],
+            [
+              3700,
+              2928,
+              1964,
+              1331
+            ],
+            [
+              223,
+              295,
+              965,
+              474
+            ],
+            [
+              217,
+              118,
+              413,
+              179
+            ]
+          ],
+          "changing_cases": {
+            "n": 10141,
+            "accuracy": 0.2954,
+            "macro_f1": 0.2487
+          },
+          "deterioration_detected": 0.5181,
+          "auroc_critical": 0.7439,
+          "auroc_high_or_more": 0.8166
         }
-      },
-      "confusion": [
-        [
-          19574,
-          6557,
-          1504,
-          2149
-        ],
-        [
-          7866,
-          7027,
-          3832,
-          3707
-        ],
-        [
-          477,
-          657,
-          1865,
-          1102
-        ],
-        [
-          478,
-          403,
-          928,
-          497
-        ]
-      ],
-      "changing_cases": {
-        "n": 22679,
-        "accuracy": 0.3051,
-        "macro_f1": 0.2532
-      },
-      "deterioration_detected": 0.5229,
-      "train_seconds": 0.3
+      }
     },
     "DecisionTree": {
-      "accuracy": 0.5442,
-      "macro_f1": 0.4034,
-      "per_class": {
-        "Low": {
-          "precision": 0.705,
-          "recall": 0.724,
-          "f1": 0.714,
-          "support": 29784
+      "train_windows": 272288,
+      "fit_seconds": 1.0,
+      "predict_seconds_val": 0.0,
+      "validation": {
+        "accuracy": 0.5442,
+        "macro_f1": 0.4034,
+        "per_class": {
+          "Low": {
+            "precision": 0.705,
+            "recall": 0.724,
+            "f1": 0.714,
+            "support": 29784
+          },
+          "Medium": {
+            "precision": 0.558,
+            "recall": 0.345,
+            "f1": 0.426,
+            "support": 22432
+          },
+          "High": {
+            "precision": 0.208,
+            "recall": 0.478,
+            "f1": 0.29,
+            "support": 4101
+          },
+          "Critical": {
+            "precision": 0.136,
+            "recall": 0.28,
+            "f1": 0.183,
+            "support": 2306
+          }
         },
-        "Medium": {
-          "precision": 0.558,
-          "recall": 0.345,
-          "f1": 0.426,
-          "support": 22432
+        "confusion": [
+          [
+            21567,
+            4839,
+            1974,
+            1404
+          ],
+          [
+            8062,
+            7730,
+            4721,
+            1919
+          ],
+          [
+            495,
+            852,
+            1962,
+            792
+          ],
+          [
+            467,
+            424,
+            769,
+            646
+          ]
+        ],
+        "changing_cases": {
+          "n": 22679,
+          "accuracy": 0.2888,
+          "macro_f1": 0.2642
         },
-        "High": {
-          "precision": 0.208,
-          "recall": 0.478,
-          "f1": 0.29,
-          "support": 4101
+        "deterioration_detected": 0.4681,
+        "auroc_critical": 0.7211,
+        "auroc_high_or_more": 0.8119
+      },
+      "test": {
+        "all": {
+          "accuracy": 0.5412,
+          "macro_f1": 0.4022,
+          "per_class": {
+            "Low": {
+              "precision": 0.707,
+              "recall": 0.723,
+              "f1": 0.715,
+              "support": 29171
+            },
+            "Medium": {
+              "precision": 0.554,
+              "recall": 0.343,
+              "f1": 0.424,
+              "support": 22293
+            },
+            "High": {
+              "precision": 0.211,
+              "recall": 0.484,
+              "f1": 0.294,
+              "support": 4283
+            },
+            "Critical": {
+              "precision": 0.133,
+              "recall": 0.264,
+              "f1": 0.177,
+              "support": 2295
+            }
+          },
+          "confusion": [
+            [
+              21079,
+              4890,
+              1969,
+              1233
+            ],
+            [
+              7767,
+              7650,
+              4987,
+              1889
+            ],
+            [
+              473,
+              893,
+              2075,
+              842
+            ],
+            [
+              498,
+              369,
+              822,
+              606
+            ]
+          ],
+          "changing_cases": {
+            "n": 22592,
+            "accuracy": 0.2965,
+            "macro_f1": 0.2668
+          },
+          "deterioration_detected": 0.4769,
+          "auroc_critical": 0.7116,
+          "auroc_high_or_more": 0.813
         },
-        "Critical": {
-          "precision": 0.136,
-          "recall": 0.28,
-          "f1": 0.183,
-          "support": 2306
+        "hospital_A": {
+          "accuracy": 0.513,
+          "macro_f1": 0.3955,
+          "per_class": {
+            "Low": {
+              "precision": 0.672,
+              "recall": 0.688,
+              "f1": 0.68,
+              "support": 13756
+            },
+            "Medium": {
+              "precision": 0.568,
+              "recall": 0.352,
+              "f1": 0.434,
+              "support": 12370
+            },
+            "High": {
+              "precision": 0.209,
+              "recall": 0.483,
+              "f1": 0.292,
+              "support": 2326
+            },
+            "Critical": {
+              "precision": 0.132,
+              "recall": 0.262,
+              "f1": 0.176,
+              "support": 1368
+            }
+          },
+          "confusion": [
+            [
+              9466,
+              2571,
+              991,
+              728
+            ],
+            [
+              4081,
+              4350,
+              2776,
+              1163
+            ],
+            [
+              238,
+              506,
+              1124,
+              458
+            ],
+            [
+              298,
+              232,
+              480,
+              358
+            ]
+          ],
+          "changing_cases": {
+            "n": 12451,
+            "accuracy": 0.3113,
+            "macro_f1": 0.2741
+          },
+          "deterioration_detected": 0.4883,
+          "auroc_critical": 0.6958,
+          "auroc_high_or_more": 0.7957
+        },
+        "hospital_B": {
+          "accuracy": 0.5709,
+          "macro_f1": 0.4074,
+          "per_class": {
+            "Low": {
+              "precision": 0.738,
+              "recall": 0.753,
+              "f1": 0.746,
+              "support": 15415
+            },
+            "Medium": {
+              "precision": 0.537,
+              "recall": 0.333,
+              "f1": 0.411,
+              "support": 9923
+            },
+            "High": {
+              "precision": 0.212,
+              "recall": 0.486,
+              "f1": 0.295,
+              "support": 1957
+            },
+            "Critical": {
+              "precision": 0.133,
+              "recall": 0.268,
+              "f1": 0.178,
+              "support": 927
+            }
+          },
+          "confusion": [
+            [
+              11613,
+              2319,
+              978,
+              505
+            ],
+            [
+              3686,
+              3300,
+              2211,
+              726
+            ],
+            [
+              235,
+              387,
+              951,
+              384
+            ],
+            [
+              200,
+              137,
+              342,
+              248
+            ]
+          ],
+          "changing_cases": {
+            "n": 10141,
+            "accuracy": 0.2784,
+            "macro_f1": 0.2576
+          },
+          "deterioration_detected": 0.4627,
+          "auroc_critical": 0.7241,
+          "auroc_high_or_more": 0.8305
         }
-      },
-      "confusion": [
-        [
-          21567,
-          4839,
-          1974,
-          1404
-        ],
-        [
-          8062,
-          7730,
-          4721,
-          1919
-        ],
-        [
-          495,
-          852,
-          1962,
-          792
-        ],
-        [
-          467,
-          424,
-          769,
-          646
-        ]
-      ],
-      "changing_cases": {
-        "n": 22679,
-        "accuracy": 0.2888,
-        "macro_f1": 0.2642
-      },
-      "deterioration_detected": 0.4681,
-      "train_seconds": 0.9
+      }
     },
     "RandomForest": {
-      "accuracy": 0.5633,
-      "macro_f1": 0.4259,
-      "per_class": {
-        "Low": {
-          "precision": 0.707,
-          "recall": 0.751,
-          "f1": 0.728,
-          "support": 29784
+      "train_windows": 272288,
+      "fit_seconds": 11.8,
+      "predict_seconds_val": 0.3,
+      "validation": {
+        "accuracy": 0.5633,
+        "macro_f1": 0.4259,
+        "per_class": {
+          "Low": {
+            "precision": 0.707,
+            "recall": 0.751,
+            "f1": 0.728,
+            "support": 29784
+          },
+          "Medium": {
+            "precision": 0.571,
+            "recall": 0.349,
+            "f1": 0.433,
+            "support": 22432
+          },
+          "High": {
+            "precision": 0.212,
+            "recall": 0.544,
+            "f1": 0.305,
+            "support": 4101
+          },
+          "Critical": {
+            "precision": 0.219,
+            "recall": 0.26,
+            "f1": 0.238,
+            "support": 2306
+          }
         },
-        "Medium": {
-          "precision": 0.571,
-          "recall": 0.349,
-          "f1": 0.433,
-          "support": 22432
+        "confusion": [
+          [
+            22373,
+            4725,
+            2090,
+            596
+          ],
+          [
+            8293,
+            7821,
+            5375,
+            943
+          ],
+          [
+            517,
+            757,
+            2229,
+            598
+          ],
+          [
+            482,
+            406,
+            819,
+            599
+          ]
+        ],
+        "changing_cases": {
+          "n": 22679,
+          "accuracy": 0.2976,
+          "macro_f1": 0.282
         },
-        "High": {
-          "precision": 0.212,
-          "recall": 0.544,
-          "f1": 0.305,
-          "support": 4101
+        "deterioration_detected": 0.4551,
+        "auroc_critical": 0.7788,
+        "auroc_high_or_more": 0.8306
+      },
+      "test": {
+        "all": {
+          "accuracy": 0.5595,
+          "macro_f1": 0.4243,
+          "per_class": {
+            "Low": {
+              "precision": 0.706,
+              "recall": 0.748,
+              "f1": 0.727,
+              "support": 29171
+            },
+            "Medium": {
+              "precision": 0.565,
+              "recall": 0.344,
+              "f1": 0.428,
+              "support": 22293
+            },
+            "High": {
+              "precision": 0.222,
+              "recall": 0.566,
+              "f1": 0.319,
+              "support": 4283
+            },
+            "Critical": {
+              "precision": 0.211,
+              "recall": 0.24,
+              "f1": 0.224,
+              "support": 2295
+            }
+          },
+          "confusion": [
+            [
+              21827,
+              4816,
+              2011,
+              517
+            ],
+            [
+              8072,
+              7670,
+              5636,
+              915
+            ],
+            [
+              481,
+              742,
+              2426,
+              634
+            ],
+            [
+              524,
+              353,
+              867,
+              551
+            ]
+          ],
+          "changing_cases": {
+            "n": 22592,
+            "accuracy": 0.302,
+            "macro_f1": 0.2815
+          },
+          "deterioration_detected": 0.4641,
+          "auroc_critical": 0.7617,
+          "auroc_high_or_more": 0.8313
         },
-        "Critical": {
-          "precision": 0.219,
-          "recall": 0.26,
-          "f1": 0.238,
-          "support": 2306
+        "hospital_A": {
+          "accuracy": 0.5325,
+          "macro_f1": 0.4158,
+          "per_class": {
+            "Low": {
+              "precision": 0.672,
+              "recall": 0.717,
+              "f1": 0.694,
+              "support": 13756
+            },
+            "Medium": {
+              "precision": 0.578,
+              "recall": 0.356,
+              "f1": 0.441,
+              "support": 12370
+            },
+            "High": {
+              "precision": 0.216,
+              "recall": 0.553,
+              "f1": 0.311,
+              "support": 2326
+            },
+            "Critical": {
+              "precision": 0.204,
+              "recall": 0.233,
+              "f1": 0.217,
+              "support": 1368
+            }
+          },
+          "confusion": [
+            [
+              9868,
+              2554,
+              1010,
+              324
+            ],
+            [
+              4245,
+              4404,
+              3145,
+              576
+            ],
+            [
+              251,
+              440,
+              1287,
+              348
+            ],
+            [
+              318,
+              227,
+              504,
+              319
+            ]
+          ],
+          "changing_cases": {
+            "n": 12451,
+            "accuracy": 0.3136,
+            "macro_f1": 0.2837
+          },
+          "deterioration_detected": 0.4736,
+          "auroc_critical": 0.7355,
+          "auroc_high_or_more": 0.8128
+        },
+        "hospital_B": {
+          "accuracy": 0.5881,
+          "macro_f1": 0.4324,
+          "per_class": {
+            "Low": {
+              "precision": 0.737,
+              "recall": 0.776,
+              "f1": 0.756,
+              "support": 15415
+            },
+            "Medium": {
+              "precision": 0.548,
+              "recall": 0.329,
+              "f1": 0.411,
+              "support": 9923
+            },
+            "High": {
+              "precision": 0.228,
+              "recall": 0.582,
+              "f1": 0.328,
+              "support": 1957
+            },
+            "Critical": {
+              "precision": 0.221,
+              "recall": 0.25,
+              "f1": 0.235,
+              "support": 927
+            }
+          },
+          "confusion": [
+            [
+              11959,
+              2262,
+              1001,
+              193
+            ],
+            [
+              3827,
+              3266,
+              2491,
+              339
+            ],
+            [
+              230,
+              302,
+              1139,
+              286
+            ],
+            [
+              206,
+              126,
+              363,
+              232
+            ]
+          ],
+          "changing_cases": {
+            "n": 10141,
+            "accuracy": 0.2877,
+            "macro_f1": 0.2789
+          },
+          "deterioration_detected": 0.4523,
+          "auroc_critical": 0.7872,
+          "auroc_high_or_more": 0.8501
         }
+      }
+    },
+    "SVM": {
+      "train_windows": 20000,
+      "fit_seconds": 76.8,
+      "predict_seconds_val": 29.5,
+      "validation": {
+        "accuracy": 0.6258,
+        "macro_f1": 0.3603,
+        "per_class": {
+          "Low": {
+            "precision": 0.695,
+            "recall": 0.784,
+            "f1": 0.737,
+            "support": 29784
+          },
+          "Medium": {
+            "precision": 0.537,
+            "recall": 0.58,
+            "f1": 0.558,
+            "support": 22432
+          },
+          "High": {
+            "precision": 0.384,
+            "recall": 0.061,
+            "f1": 0.106,
+            "support": 4101
+          },
+          "Critical": {
+            "precision": 0.458,
+            "recall": 0.021,
+            "f1": 0.041,
+            "support": 2306
+          }
+        },
+        "confusion": [
+          [
+            23363,
+            6372,
+            48,
+            1
+          ],
+          [
+            9160,
+            13021,
+            234,
+            17
+          ],
+          [
+            559,
+            3251,
+            251,
+            40
+          ],
+          [
+            546,
+            1591,
+            120,
+            49
+          ]
+        ],
+        "changing_cases": {
+          "n": 22679,
+          "accuracy": 0.2852,
+          "macro_f1": 0.1429
+        },
+        "deterioration_detected": 0.2957,
+        "auroc_critical": 0.7612,
+        "auroc_high_or_more": 0.8217
       },
-      "confusion": [
-        [
-          22373,
-          4725,
-          2090,
-          596
-        ],
-        [
-          8293,
-          7821,
-          5375,
-          943
-        ],
-        [
-          517,
-          757,
-          2229,
-          598
-        ],
-        [
-          482,
-          406,
-          819,
-          599
-        ]
-      ],
-      "changing_cases": {
-        "n": 22679,
-        "accuracy": 0.2976,
-        "macro_f1": 0.282
-      },
-      "deterioration_detected": 0.4551,
-      "train_seconds": 11.2
+      "test": {
+        "all": {
+          "accuracy": 0.6253,
+          "macro_f1": 0.3643,
+          "per_class": {
+            "Low": {
+              "precision": 0.694,
+              "recall": 0.781,
+              "f1": 0.735,
+              "support": 29171
+            },
+            "Medium": {
+              "precision": 0.538,
+              "recall": 0.59,
+              "f1": 0.563,
+              "support": 22293
+            },
+            "High": {
+              "precision": 0.457,
+              "recall": 0.074,
+              "f1": 0.127,
+              "support": 4283
+            },
+            "Critical": {
+              "precision": 0.422,
+              "recall": 0.017,
+              "f1": 0.032,
+              "support": 2295
+            }
+          },
+          "confusion": [
+            [
+              22792,
+              6339,
+              37,
+              3
+            ],
+            [
+              8915,
+              13150,
+              213,
+              15
+            ],
+            [
+              536,
+              3397,
+              316,
+              34
+            ],
+            [
+              585,
+              1546,
+              126,
+              38
+            ]
+          ],
+          "changing_cases": {
+            "n": 22592,
+            "accuracy": 0.2905,
+            "macro_f1": 0.1454
+          },
+          "deterioration_detected": 0.2999,
+          "auroc_critical": 0.7435,
+          "auroc_high_or_more": 0.8189
+        },
+        "hospital_A": {
+          "accuracy": 0.6061,
+          "macro_f1": 0.3588,
+          "per_class": {
+            "Low": {
+              "precision": 0.659,
+              "recall": 0.754,
+              "f1": 0.703,
+              "support": 13756
+            },
+            "Medium": {
+              "precision": 0.55,
+              "recall": 0.607,
+              "f1": 0.577,
+              "support": 12370
+            },
+            "High": {
+              "precision": 0.459,
+              "recall": 0.074,
+              "f1": 0.128,
+              "support": 2326
+            },
+            "Critical": {
+              "precision": 0.442,
+              "recall": 0.014,
+              "f1": 0.027,
+              "support": 1368
+            }
+          },
+          "confusion": [
+            [
+              10369,
+              3367,
+              19,
+              1
+            ],
+            [
+              4737,
+              7513,
+              114,
+              6
+            ],
+            [
+              280,
+              1856,
+              173,
+              17
+            ],
+            [
+              351,
+              927,
+              71,
+              19
+            ]
+          ],
+          "changing_cases": {
+            "n": 12451,
+            "accuracy": 0.3025,
+            "macro_f1": 0.1489
+          },
+          "deterioration_detected": 0.3104,
+          "auroc_critical": 0.7138,
+          "auroc_high_or_more": 0.7985
+        },
+        "hospital_B": {
+          "accuracy": 0.6457,
+          "macro_f1": 0.3685,
+          "per_class": {
+            "Low": {
+              "precision": 0.727,
+              "recall": 0.806,
+              "f1": 0.764,
+              "support": 15415
+            },
+            "Medium": {
+              "precision": 0.523,
+              "recall": 0.568,
+              "f1": 0.545,
+              "support": 9923
+            },
+            "High": {
+              "precision": 0.454,
+              "recall": 0.073,
+              "f1": 0.126,
+              "support": 1957
+            },
+            "Critical": {
+              "precision": 0.404,
+              "recall": 0.02,
+              "f1": 0.039,
+              "support": 927
+            }
+          },
+          "confusion": [
+            [
+              12423,
+              2972,
+              18,
+              2
+            ],
+            [
+              4178,
+              5637,
+              99,
+              9
+            ],
+            [
+              256,
+              1541,
+              143,
+              17
+            ],
+            [
+              234,
+              619,
+              55,
+              19
+            ]
+          ],
+          "changing_cases": {
+            "n": 10141,
+            "accuracy": 0.2758,
+            "macro_f1": 0.1414
+          },
+          "deterioration_detected": 0.2868,
+          "auroc_critical": 0.7761,
+          "auroc_high_or_more": 0.8402
+        }
+      }
     },
     "kNN": {
-      "accuracy": 0.6174,
-      "macro_f1": 0.3686,
-      "per_class": {
-        "Low": {
-          "precision": 0.656,
-          "recall": 0.84,
-          "f1": 0.737,
-          "support": 29784
+      "train_windows": 40000,
+      "fit_seconds": 0.0,
+      "predict_seconds_val": 5.5,
+      "validation": {
+        "accuracy": 0.6177,
+        "macro_f1": 0.3682,
+        "per_class": {
+          "Low": {
+            "precision": 0.658,
+            "recall": 0.836,
+            "f1": 0.737,
+            "support": 29784
+          },
+          "Medium": {
+            "precision": 0.55,
+            "recall": 0.484,
+            "f1": 0.515,
+            "support": 22432
+          },
+          "High": {
+            "precision": 0.409,
+            "recall": 0.089,
+            "f1": 0.146,
+            "support": 4101
+          },
+          "Critical": {
+            "precision": 0.578,
+            "recall": 0.04,
+            "f1": 0.075,
+            "support": 2306
+          }
         },
-        "Medium": {
-          "precision": 0.552,
-          "recall": 0.476,
-          "f1": 0.511,
-          "support": 22432
+        "confusion": [
+          [
+            24888,
+            4858,
+            33,
+            5
+          ],
+          [
+            11329,
+            10868,
+            202,
+            33
+          ],
+          [
+            888,
+            2819,
+            364,
+            30
+          ],
+          [
+            695,
+            1228,
+            290,
+            93
+          ]
+        ],
+        "changing_cases": {
+          "n": 22679,
+          "accuracy": 0.2194,
+          "macro_f1": 0.133
         },
-        "High": {
-          "precision": 0.399,
-          "recall": 0.1,
-          "f1": 0.16,
-          "support": 4101
+        "deterioration_detected": 0.2161,
+        "auroc_critical": 0.7042,
+        "auroc_high_or_more": 0.8004
+      },
+      "test": {
+        "all": {
+          "accuracy": 0.6172,
+          "macro_f1": 0.3619,
+          "per_class": {
+            "Low": {
+              "precision": 0.658,
+              "recall": 0.837,
+              "f1": 0.737,
+              "support": 29171
+            },
+            "Medium": {
+              "precision": 0.549,
+              "recall": 0.493,
+              "f1": 0.52,
+              "support": 22293
+            },
+            "High": {
+              "precision": 0.422,
+              "recall": 0.081,
+              "f1": 0.136,
+              "support": 4283
+            },
+            "Critical": {
+              "precision": 0.537,
+              "recall": 0.029,
+              "f1": 0.055,
+              "support": 2295
+            }
+          },
+          "confusion": [
+            [
+              24420,
+              4717,
+              29,
+              5
+            ],
+            [
+              11086,
+              10987,
+              206,
+              14
+            ],
+            [
+              870,
+              3027,
+              348,
+              38
+            ],
+            [
+              723,
+              1264,
+              242,
+              66
+            ]
+          ],
+          "changing_cases": {
+            "n": 22592,
+            "accuracy": 0.221,
+            "macro_f1": 0.1273
+          },
+          "deterioration_detected": 0.2156,
+          "auroc_critical": 0.6949,
+          "auroc_high_or_more": 0.803
         },
-        "Critical": {
-          "precision": 0.65,
-          "recall": 0.035,
-          "f1": 0.066,
-          "support": 2306
+        "hospital_A": {
+          "accuracy": 0.597,
+          "macro_f1": 0.3618,
+          "per_class": {
+            "Low": {
+              "precision": 0.622,
+              "recall": 0.817,
+              "f1": 0.706,
+              "support": 13756
+            },
+            "Medium": {
+              "precision": 0.563,
+              "recall": 0.511,
+              "f1": 0.536,
+              "support": 12370
+            },
+            "High": {
+              "precision": 0.422,
+              "recall": 0.081,
+              "f1": 0.136,
+              "support": 2326
+            },
+            "Critical": {
+              "precision": 0.658,
+              "recall": 0.037,
+              "f1": 0.069,
+              "support": 1368
+            }
+          },
+          "confusion": [
+            [
+              11239,
+              2498,
+              16,
+              3
+            ],
+            [
+              5921,
+              6326,
+              117,
+              6
+            ],
+            [
+              465,
+              1656,
+              188,
+              17
+            ],
+            [
+              437,
+              757,
+              124,
+              50
+            ]
+          ],
+          "changing_cases": {
+            "n": 12451,
+            "accuracy": 0.2294,
+            "macro_f1": 0.1344
+          },
+          "deterioration_detected": 0.226,
+          "auroc_critical": 0.6774,
+          "auroc_high_or_more": 0.7845
+        },
+        "hospital_B": {
+          "accuracy": 0.6384,
+          "macro_f1": 0.3585,
+          "per_class": {
+            "Low": {
+              "precision": 0.692,
+              "recall": 0.855,
+              "f1": 0.765,
+              "support": 15415
+            },
+            "Medium": {
+              "precision": 0.532,
+              "recall": 0.47,
+              "f1": 0.499,
+              "support": 9923
+            },
+            "High": {
+              "precision": 0.421,
+              "recall": 0.082,
+              "f1": 0.137,
+              "support": 1957
+            },
+            "Critical": {
+              "precision": 0.34,
+              "recall": 0.017,
+              "f1": 0.033,
+              "support": 927
+            }
+          },
+          "confusion": [
+            [
+              13181,
+              2219,
+              13,
+              2
+            ],
+            [
+              5165,
+              4661,
+              89,
+              8
+            ],
+            [
+              405,
+              1371,
+              160,
+              21
+            ],
+            [
+              286,
+              507,
+              118,
+              16
+            ]
+          ],
+          "changing_cases": {
+            "n": 10141,
+            "accuracy": 0.2107,
+            "macro_f1": 0.1176
+          },
+          "deterioration_detected": 0.2027,
+          "auroc_critical": 0.7155,
+          "auroc_high_or_more": 0.823
         }
-      },
-      "confusion": [
-        [
-          25026,
-          4723,
-          34,
-          1
-        ],
-        [
-          11467,
-          10677,
-          278,
-          10
-        ],
-        [
-          923,
-          2735,
-          411,
-          32
-        ],
-        [
-          710,
-          1210,
-          306,
-          80
-        ]
-      ],
-      "changing_cases": {
-        "n": 22679,
-        "accuracy": 0.2161,
-        "macro_f1": 0.1321
-      },
-      "deterioration_detected": 0.2132,
-      "train_seconds": 5.6
+      }
     }
   },
-  "best": "RandomForest",
   "test": {
     "all": {
       "accuracy": 0.5595,
