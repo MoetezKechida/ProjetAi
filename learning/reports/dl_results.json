@@ -1,0 +1,268 @@
+{
+  "test": {
+    "all": {
+      "accuracy": 0.6461,
+      "macro_f1": 0.4896,
+      "per_class": {
+        "Low": {
+          "precision": 0.721,
+          "recall": 0.792,
+          "f1": 0.755,
+          "support": 29171
+        },
+        "Medium": {
+          "precision": 0.594,
+          "recall": 0.556,
+          "f1": 0.575,
+          "support": 22293
+        },
+        "High": {
+          "precision": 0.377,
+          "recall": 0.372,
+          "f1": 0.375,
+          "support": 4283
+        },
+        "Critical": {
+          "precision": 0.439,
+          "recall": 0.179,
+          "f1": 0.254,
+          "support": 2295
+        }
+      },
+      "confusion": [
+        [
+          23092,
+          5845,
+          223,
+          11
+        ],
+        [
+          7929,
+          12402,
+          1830,
+          132
+        ],
+        [
+          419,
+          1888,
+          1594,
+          382
+        ],
+        [
+          567,
+          736,
+          581,
+          411
+        ]
+      ],
+      "changing_cases": {
+        "n": 22592,
+        "accuracy": 0.3739,
+        "macro_f1": 0.3044
+      },
+      "deterioration_detected": 0.4219,
+      "auroc_critical": 0.7851,
+      "auroc_high_or_more": 0.8504
+    },
+    "hospital_A": {
+      "accuracy": 0.6313,
+      "macro_f1": 0.4834,
+      "per_class": {
+        "Low": {
+          "precision": 0.691,
+          "recall": 0.772,
+          "f1": 0.729,
+          "support": 13756
+        },
+        "Medium": {
+          "precision": 0.611,
+          "recall": 0.577,
+          "f1": 0.593,
+          "support": 12370
+        },
+        "High": {
+          "precision": 0.37,
+          "recall": 0.363,
+          "f1": 0.367,
+          "support": 2326
+        },
+        "Critical": {
+          "precision": 0.459,
+          "recall": 0.167,
+          "f1": 0.245,
+          "support": 1368
+        }
+      },
+      "confusion": [
+        [
+          10613,
+          3026,
+          112,
+          5
+        ],
+        [
+          4160,
+          7138,
+          1006,
+          66
+        ],
+        [
+          220,
+          1063,
+          845,
+          198
+        ],
+        [
+          355,
+          464,
+          321,
+          228
+        ]
+      ],
+      "changing_cases": {
+        "n": 12451,
+        "accuracy": 0.3862,
+        "macro_f1": 0.3035
+      },
+      "deterioration_detected": 0.4321,
+      "auroc_critical": 0.7564,
+      "auroc_high_or_more": 0.8307
+    },
+    "hospital_B": {
+      "accuracy": 0.6617,
+      "macro_f1": 0.4953,
+      "per_class": {
+        "Low": {
+          "precision": 0.749,
+          "recall": 0.81,
+          "f1": 0.778,
+          "support": 15415
+        },
+        "Medium": {
+          "precision": 0.573,
+          "recall": 0.53,
+          "f1": 0.551,
+          "support": 9923
+        },
+        "High": {
+          "precision": 0.385,
+          "recall": 0.383,
+          "f1": 0.384,
+          "support": 1957
+        },
+        "Critical": {
+          "precision": 0.417,
+          "recall": 0.197,
+          "f1": 0.268,
+          "support": 927
+        }
+      },
+      "confusion": [
+        [
+          12479,
+          2819,
+          111,
+          6
+        ],
+        [
+          3769,
+          5264,
+          824,
+          66
+        ],
+        [
+          199,
+          825,
+          749,
+          184
+        ],
+        [
+          212,
+          272,
+          260,
+          183
+        ]
+      ],
+      "changing_cases": {
+        "n": 10141,
+        "accuracy": 0.3587,
+        "macro_f1": 0.306
+      },
+      "deterioration_detected": 0.4094,
+      "auroc_critical": 0.8148,
+      "auroc_high_or_more": 0.8705
+    }
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.0216,
+      "val_macro_f1": 0.4711
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.986,
+      "val_macro_f1": 0.4874
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.979,
+      "val_macro_f1": 0.488
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.9753,
+      "val_macro_f1": 0.4825
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.9729,
+      "val_macro_f1": 0.4886
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.97,
+      "val_macro_f1": 0.4843
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.9683,
+      "val_macro_f1": 0.4912
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.967,
+      "val_macro_f1": 0.4883
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.9649,
+      "val_macro_f1": 0.4934
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.9639,
+      "val_macro_f1": 0.4938
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.962,
+      "val_macro_f1": 0.492
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.9612,
+      "val_macro_f1": 0.4815
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.9603,
+      "val_macro_f1": 0.4855
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.9581,
+      "val_macro_f1": 0.4918
+    }
+  ]
+}

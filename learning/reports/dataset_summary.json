@@ -1,0 +1,57 @@
+{
+  "patients": 40336,
+  "rows": 1552210,
+  "hospitals": {
+    "A": {
+      "patients": 20336,
+      "septic_patients": 1790
+    },
+    "B": {
+      "patients": 20000,
+      "septic_patients": 1142
+    }
+  },
+  "missing_pct": {
+    "heart_rate": 9.9,
+    "systolic": 14.6,
+    "diastolic": 14.9,
+    "spo2": 13.1,
+    "temperature": 66.2,
+    "resp_rate": 15.4
+  },
+  "splits": {
+    "train": {
+      "patients": 27889,
+      "windows": 272288,
+      "septic_patients": 0.074,
+      "class_share": {
+        "Low": 0.496,
+        "Medium": 0.391,
+        "High": 0.074,
+        "Critical": 0.039
+      }
+    },
+    "val": {
+      "patients": 5978,
+      "windows": 58623,
+      "septic_patients": 0.074,
+      "class_share": {
+        "Low": 0.508,
+        "Medium": 0.383,
+        "High": 0.07,
+        "Critical": 0.039
+      }
+    },
+    "test": {
+      "patients": 5967,
+      "windows": 58042,
+      "septic_patients": 0.074,
+      "class_share": {
+        "Low": 0.503,
+        "Medium": 0.384,
+        "High": 0.074,
+        "Critical": 0.04
+      }
+    }
+  }
+}

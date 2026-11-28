@@ -4,8 +4,10 @@
 |---|---|---|
 | 1 – Environment & knowledge representation | repository root (this file) | `python demo.py` |
 | 2 – Reasoning: deduction, unification, resolution | [`reasoning/`](reasoning/README.md) | `python -m reasoning.demo_block2` |
+| 3 – ML / DL risk prediction | [`learning/`](learning/README.md) | `python -m learning.demo_block3` |
 
 All tests: `python -m unittest discover` (run from the repository root).
+Block 3 needs `pip install -r requirements.txt`.
 
 # Block 1 – Agent, Environment and Knowledge Representation
 
